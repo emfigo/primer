@@ -5,7 +5,7 @@ install:
 migrate:
 	FLASK_SKIP_DOTENV=1 flask db upgrade head
 rollback:
-	FLASK_SKIP_DOTENV=1 flask db  downgrade -1
+	FLASK_SKIP_DOTENV=1 flask db  downgrade
 test:
 	APP_ENV=test pytest
 clean:
