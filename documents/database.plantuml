@@ -1,0 +1,38 @@
+@startuml
+class Customers {
+  id : uuid
+  first_name : string
+  last_name : string
+  company : string
+  email : string
+  phone : string
+  fax : string
+  website : string
+  token : string
+}
+
+class PaymentMethods {
+  id : uuid
+  customer_id : uuid
+  details : jsonb
+  provider_information_id : uuid
+  token : string
+}
+
+class ProviderInformations {
+  id : uuid
+  customer_id : uuid
+  payment_id : uuid
+  name : string
+  information : jsonb
+}
+
+note "Details will look like:\n {\n card_holder_name,\n number,\n cvv,\n expriation_date\n }\n" as details
+note "Information will look like:\n {\n payment_token,\n nonce_token,\n customer_id,\n }\n" as information
+
+Customers "1" *-- "0..*" PaymentMethods
+PaymentMethods .. details
+PaymentMethods "1" *--* "1" ProviderInformations
+ProviderInformations .. information
+
+@enduml
