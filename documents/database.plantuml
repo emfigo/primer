@@ -15,14 +15,12 @@ class PaymentMethods {
   id : uuid
   customer_id : uuid
   details : jsonb
-  provider_information_id : uuid
+  payment_provider_information_id : uuid
   token : string
 }
 
-class ProviderInformations {
+class PaymentProviderInformations {
   id : uuid
-  customer_id : uuid
-  payment_id : uuid
   name : string
   information : jsonb
 }
@@ -32,7 +30,7 @@ note "Information will look like:\n {\n payment_token,\n nonce_token,\n customer
 
 Customers "1" *-- "0..*" PaymentMethods
 PaymentMethods .. details
-PaymentMethods "1" *--* "1" ProviderInformations
-ProviderInformations .. information
+PaymentMethods --* "1" PaymentProviderInformations
+PaymentProviderInformations .. information
 
 @enduml
