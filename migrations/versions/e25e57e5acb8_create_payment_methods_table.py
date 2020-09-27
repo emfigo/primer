@@ -22,7 +22,7 @@ def upgrade():
         sa.Column('id', postgresql.UUID, nullable=False, primary_key=True),
         sa.Column('customer_id', postgresql.UUID, sa.ForeignKey('customers.id'), nullable=False),
         sa.Column('details', postgresql.JSONB, nullable=False),
-        sa.Column('payment_provider_information_id', postgresql.UUID, sa.ForeignKey('payment_provider_informations.id'), nullable=False),
+        sa.Column('payment_processor_information_id', postgresql.UUID, sa.ForeignKey('payment_processor_informations.id'), nullable=False),
         sa.Column('token', sa.String(1000), nullable=False),
         sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), nullable=False, unique=True, server_default=sa.func.now()),
         sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), nullable=False, unique=True, server_default=sa.func.now()),

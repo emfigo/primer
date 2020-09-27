@@ -1,4 +1,4 @@
-"""create payment provider informations table
+"""create payment processor informations table
 
 Revision ID: 0493447dcfc8
 Revises: fa933040a392
@@ -18,7 +18,7 @@ depends_on = None
 
 def upgrade():
     op.create_table(
-        'payment_provider_informations',
+        'payment_processor_informations',
         sa.Column('id', postgresql.UUID, nullable=False, primary_key=True),
         sa.Column('name', sa.String(100), nullable=False),
         sa.Column('information', postgresql.JSONB, nullable=False),
@@ -28,4 +28,4 @@ def upgrade():
 
 
 def downgrade():
-    op.drop_table('payment_provider_informations')
+    op.drop_table('payment_processor_informations')
