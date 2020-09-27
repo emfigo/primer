@@ -28,17 +28,19 @@ def upgrade():
         sa.Column('phone', sa.String(20), nullable=False),
         sa.Column('fax', sa.String(20), nullable=False),
         sa.Column('website', sa.String(250), nullable=False),
-        sa.Column('token', sa.String(1000), nullable=False),
+        sa.Column('token', sa.String(256), nullable=False),
         sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), nullable=False, unique=True, server_default=sa.func.now()),
         sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), nullable=False, unique=True, server_default=sa.func.now()),
     )
 
     op.create_unique_constraint('uq_customers_email', 'customers', ['email'])
     op.create_index('ik_customers_email', 'customers', ['email'])
+    op.create_index('ik_customers_token', 'customers', ['token'])
 
 
 def downgrade():
     op.drop_index('ik_customers_email', 'customers')
+    op.drop_index('ik_customers_token', 'customers')
     op.drop_constraint('uq_customers_email', 'customers')
     op.drop_table('customers')
 

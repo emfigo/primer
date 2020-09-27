@@ -4,6 +4,7 @@ from sqlalchemy import Column, String
 import sqlalchemy.dialects.postgresql as postgresql
 
 from primer import db
+from primer.tokenizer import Tokenizer
 
 class Customer(db.Model):
     __tablename__ = 'customers'
@@ -37,10 +38,28 @@ class Customer(db.Model):
             phone=phone,
             fax=fax,
             website=website,
-            token='sometokenfornow'
+            token=Tokenizer.random_token()
         )
 
         db.session.add(customer)
         db.session.commit()
 
         return customer
+
+    @classmethod
+    def find_by_email(kls, email: str):
+        return kls.query.filter_by(
+            email = email
+        ).first()
+
+    @classmethod
+    def find_by_id(kls, id: uuid.UUID):
+        return kls.query.filter_by(
+            id = id
+        ).first()
+
+    @classmethod
+    def find_by_token(kls, token: str):
+        return kls.query.filter_by(
+            token = token
+        ).first()
