@@ -2,7 +2,7 @@
 
 ## About
 The aim of this application is to provide the backend for processing payments. In this particular
-case the only provider I'm going to use is Braintree. This will be purely used as a sample
+case the only processor I'm going to use is Braintree. This will be purely used as a sample
 application.
 
 ### Assumptions and understanding of the problem
@@ -10,6 +10,10 @@ application.
 - This project was developed in a machine using macOS Catalina
 - These instructions assume you are working on a unix based system.
 - Since the API required is too small, the application will be done with Flask
+- Because of `Note: for context, in order for Primer to facilitate recurring transactions across a range of processors, and to centrally capture and store payment information - tokenisation and storage of raw payment information sits with us.`, I've decided to store and manage all customer and payment information in the backend app.
+- Even though at the moment the only processor used is Braintree, the current implementation will allow to incorporate other processors in the future, being able to manage multiple of them at the same time.
+- To reduce scope and because there are no explicit requirements, a few things were simplified:
+  - PPI data like customer information are store in the DB with the rest of the data.
 
 ### Requirements
 

@@ -27,7 +27,7 @@ def upgrade():
         sa.Column('email', sa.String(100), nullable=False),
         sa.Column('phone', sa.String(20), nullable=False),
         sa.Column('fax', sa.String(20), nullable=False),
-        sa.Column('website', sa.String(20), nullable=False),
+        sa.Column('website', sa.String(250), nullable=False),
         sa.Column('token', sa.String(1000), nullable=False),
         sa.Column('created_at', postgresql.TIMESTAMP(timezone=True), nullable=False, unique=True, server_default=sa.func.now()),
         sa.Column('updated_at', postgresql.TIMESTAMP(timezone=True), nullable=False, unique=True, server_default=sa.func.now()),
