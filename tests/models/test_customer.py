@@ -15,7 +15,7 @@ class TestCustomer:
         fax = '+12222222222'
         website = 'https://www.reallycool.test'
 
-        customer = Customer.create_customer(
+        customer = Customer.create(
             first_name=first_name,
             last_name=last_name,
             company=company,
@@ -63,7 +63,7 @@ class TestCustomer:
         fax = '+12222222222'
         website = 'https://www.reallycool.test'
 
-        customer = Customer.create_customer(
+        customer = Customer.create(
             first_name=first_name,
             last_name=last_name,
             company=company,
@@ -86,7 +86,7 @@ class TestCustomer:
         fax = '+12222222222'
         website = 'https://www.reallycool.test'
 
-        customer = Customer.create_customer(
+        customer = Customer.create(
             first_name=first_name,
             last_name=last_name,
             company=company,
@@ -109,7 +109,7 @@ class TestCustomer:
         fax = '+12222222222'
         website = 'https://www.reallycool.test'
 
-        customer = Customer.create_customer(
+        customer = Customer.create(
             first_name=first_name,
             last_name=last_name,
             company=company,

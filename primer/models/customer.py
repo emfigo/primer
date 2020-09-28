@@ -21,14 +21,14 @@ class Customer(db.Model):
     updated_at = Column(postgresql.TIMESTAMP(timezone=True), nullable=False, default=datetime.utcnow)
 
     @classmethod
-    def create_customer(kls,
-                        first_name: str,
-                        last_name: str,
-                        company: str,
-                        email: str,
-                        phone: str = None,
-                        fax: str = None,
-                        website: str = None):
+    def create(kls,
+               first_name: str,
+               last_name: str,
+               company: str,
+               email: str,
+               phone: str = None,
+               fax: str = None,
+               website: str = None):
 
         customer = Customer(
             first_name=first_name,
