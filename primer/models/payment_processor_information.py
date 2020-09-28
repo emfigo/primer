@@ -1,5 +1,4 @@
 from datetime import datetime
-import json
 import uuid
 from sqlalchemy import Column, String
 import sqlalchemy.dialects.postgresql as postgresql

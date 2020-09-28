@@ -1,4 +1,3 @@
-import json
 import pytest
 import uuid
 
@@ -8,7 +7,7 @@ from primer.models.payment_processor_information import PaymentProcessorInformat
 @pytest.mark.usefixtures('database')
 class TestPaymentProcessorInformation:
     def test_creates_customer_with_all_expected_attributes(self, database):
-        name = 'braintree'
+        name = 'braintreetest'
         information = {
             'payment_token': 'sometoken',
             'nonce_token': 'someothertoken',
@@ -30,7 +29,7 @@ class TestPaymentProcessorInformation:
         assert payment_processor_information.information == information
 
     def test_find_by_retrieves_teh_expected_payment_processor_information(self, database):
-        name = 'stripe'
+        name = 'stripetest'
         information = {
             'payment_token': 'sometoken',
             'customer_id': 'someid'
