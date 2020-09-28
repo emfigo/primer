@@ -16,7 +16,7 @@ class Customer(db.Model):
     phone = Column(String(100), nullable=False)
     fax = Column(String(20), nullable=False)
     website = Column(String(250), nullable=False)
-    token = Column(String(1000), nullable=False)
+    token = Column(String(250), nullable=False)
     created_at = Column(postgresql.TIMESTAMP(timezone=True), nullable=False, default=datetime.utcnow)
     updated_at = Column(postgresql.TIMESTAMP(timezone=True), nullable=False, default=datetime.utcnow)
 
