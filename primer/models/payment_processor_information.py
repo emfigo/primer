@@ -26,3 +26,9 @@ class PaymentProcessorInformation(db.Model):
         db.session.commit()
 
         return payment_processor_information
+
+    @classmethod
+    def find_by_id(kls, id: uuid.UUID):
+        return PaymentProcessorInformation.query.filter_by(
+            id = id
+        ).first()
