@@ -28,7 +28,7 @@ class TestPaymentProcessorInformation:
         assert payment_processor_information.name == name
         assert payment_processor_information.information == information
 
-    def test_find_by_retrieves_teh_expected_payment_processor_information(self, database):
+    def test_find_by_id_retrieves_the_expected_payment_processor_information(self, database):
         name = 'stripetest'
         information = {
             'payment_token': 'sometoken',

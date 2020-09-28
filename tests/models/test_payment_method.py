@@ -137,3 +137,76 @@ class TestPaymentMethod:
             customer_id = customer.id
         ).first() is None
 
+    def test_find_by_id_retrieves_the_expected_payment_method(self, database):
+        customer = Customer.create(
+            first_name='Test',
+            last_name='Coool2',
+            company='Really Cool LTD',
+            email='test.coool2@reallycool.test',
+            phone='+1111111111',
+            fax='+12222222222',
+            website='https://www.reallycool.test'
+        )
+
+        payment_processor_information =  PaymentProcessorInformation.create(
+            name = 'braintree',
+            information = {
+                'payment_token': 'sometoken',
+                'nonce_token': 'someothertoken',
+                'customer_id': 'someid'
+            }
+        )
+
+        details = {
+            'card_holder_name': 'Test Coool',
+            'number': '1111' * 4,
+            'cvv': '111',
+            'expiration_date': '12/99'
+        }
+
+        payment_method = PaymentMethod.create(
+            customer = customer,
+            details = details,
+            payment_processor_information = payment_processor_information
+        )
+
+        assert PaymentMethod.find_by_id(uuid.uuid4()) is None
+        assert PaymentMethod.find_by_id(payment_method.id) is not None
+        assert PaymentMethod.find_by_id(payment_method.id) == payment_method
+
+    def test_find_by_token_retrieves_the_expected_payment_method(self, database):
+        customer = Customer.create(
+            first_name='Test',
+            last_name='Coool3',
+            company='Really Cool LTD',
+            email='test.coool3@reallycool.test',
+            phone='+1111111111',
+            fax='+12222222222',
+            website='https://www.reallycool.test'
+        )
+
+        payment_processor_information =  PaymentProcessorInformation.create(
+            name = 'braintree',
+            information = {
+                'payment_token': 'sometoken',
+                'nonce_token': 'someothertoken',
+                'customer_id': 'someid'
+            }
+        )
+
+        details = {
+            'card_holder_name': 'Test Coool',
+            'number': '1111' * 4,
+            'cvv': '111',
+            'expiration_date': '12/99'
+        }
+
+        payment_method = PaymentMethod.create(
+            customer = customer,
+            details = details,
+            payment_processor_information = payment_processor_information
+        )
+
+        assert PaymentMethod.find_by_token('nonexistingtoken') is None
+        assert PaymentMethod.find_by_token(payment_method.token) is not None
+        assert PaymentMethod.find_by_token(payment_method.token) == payment_method

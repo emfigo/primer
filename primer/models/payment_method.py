@@ -45,3 +45,15 @@ class PaymentMethod(db.Model):
             db.session.rollback()
 
         return payment_method
+
+    @classmethod
+    def find_by_token(kls, token: str):
+        return PaymentMethod.query.filter_by(
+            token = token
+        ).first()
+
+    @classmethod
+    def find_by_id(kls, id: uuid.UUID):
+        return PaymentMethod.query.filter_by(
+            id = id
+        ).first()
