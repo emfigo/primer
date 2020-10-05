@@ -3,7 +3,7 @@ import pytest
 from primer import app, db
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='function')
 def database(request):
     db.create_all()
 

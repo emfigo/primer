@@ -1,7 +1,6 @@
 import pytest
 import uuid
 
-from primer import db
 from primer.models.customer import Customer
 
 @pytest.mark.usefixtures('database')
