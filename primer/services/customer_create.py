@@ -17,10 +17,10 @@ class CustomerCreate:
 
     @classmethod
     def call(kls, token: str, details: dict):
-        sliced_details = kls._slice(details)
         customer = Customer.find_by_token(token)
 
         if customer is None:
+            sliced_details = kls._slice(details)
             customer = Customer.find_by_email(details['email'])
 
         if customer is None:

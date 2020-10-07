@@ -51,10 +51,10 @@ class TestCustomerCreate:
         assert existing_customer is not None
         assert existing_customer.id == customer.id
 
-    def test_when_customer_exists_and_token_provided_returns_existing_customer(self, database):
+    def test_when_customer_exists_and_token_provided_and_not_other_details_returns_existing_customer(self, database):
         existing_customer = Customer.create(**self.details)
 
-        customer = CustomerCreate.call(existing_customer.token, self.details)
+        customer = CustomerCreate.call(existing_customer.token, {})
 
         assert existing_customer is not None
         assert existing_customer.id == customer.id

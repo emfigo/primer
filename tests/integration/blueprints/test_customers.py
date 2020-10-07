@@ -21,6 +21,24 @@ class TestBlueprintCustomers:
         assert response.status_code == HTTPStatus.CREATED
         assert response.json == customer.as_dict()
 
+    def test_returns_existing_customers_when_token_specified(self, testapp, database):
+        client = testapp.test_client()
+        customer = Customer.create(**{
+            'first_name': 'Test',
+            'last_name': 'Test',
+            'company': 'Really Cool LTD',
+            'email': 'test.test@reallycool.test',
+            'phone': '+1111111111'
+        })
+        params = {}
+        headers = {
+            'Authorization': f'Bearer {customer.token}'
+        }
+        response = client.post('/customers', json=params, headers=headers)
+
+        assert response.status_code == HTTPStatus.CREATED
+        assert response.json == customer.as_dict()
+
     @pytest.mark.parametrize('invalid_detail', [
         { 'first_name': None },
         { 'last_name': None },
