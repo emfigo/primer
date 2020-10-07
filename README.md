@@ -14,6 +14,11 @@ application.
 - Even though at the moment the only processor used is Braintree, the current implementation will allow to incorporate other processors in the future, being able to manage multiple of them at the same time.
 - To reduce scope and because there are no explicit requirements, a few things were simplified:
   - PPI data like customer information are store in the DB with the rest of the data.
+  - Even though I'm using tokens, I have not introduced any mechanism for expiration of the token (more security)
+  - Didn't add client documentation to the API (like swagger)
+  - You can create a customer through the API, but the functionality is pretty basic. You won't be able to do more things like patching or reading information from the customer.
+  - Error messages in the API are really basic. No presenters
+  - There is no authentication, neither authorization on the API, just relies on the tokens.
 
 ### Requirements
 

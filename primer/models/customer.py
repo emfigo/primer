@@ -63,3 +63,13 @@ class Customer(db.Model):
         return kls.query.filter_by(
             token = token
         ).first()
+
+    def as_dict(self):
+        return {
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'token': self.token,
+            'updated_at': int(self.created_at.timestamp()),
+            'created_at': int(self.created_at.timestamp())
+        }

@@ -6,9 +6,9 @@ from primer.models.customer import Customer
 @pytest.mark.usefixtures('database')
 class TestCustomer:
     first_name = 'Test'
-    last_name = 'Test1'
+    last_name = 'Test'
     company = 'Really Cool LTD'
-    email = 'test1.lasttest@reallycool.test'
+    email = 'test.test@reallycool.test'
     phone = '+1111111111'
     fax = '+12222222222'
     website = 'https://www.reallycool.test'
@@ -52,6 +52,28 @@ class TestCustomer:
         assert customer.phone == self.phone
         assert customer.fax == self.fax
         assert customer.website == self.website
+
+    def test_converts_customer_to_dict(self, database):
+        customer = Customer.create(
+            first_name = self.first_name,
+            last_name = self.last_name,
+            company = self.company,
+            email = self.email,
+            phone = self.phone,
+            fax = self.fax,
+            website = self.website
+        )
+
+        expected_json = {
+            'first_name': customer.first_name,
+            'last_name': customer.last_name,
+            'email': customer.email,
+            'token': customer.token,
+            'updated_at': int(customer.created_at.timestamp()),
+            'created_at': int(customer.created_at.timestamp())
+        }
+
+        assert customer.as_dict() == expected_json
 
     def test_finds_by_email_returns_the_expected_customer(self, database):
         customer = Customer.create(
