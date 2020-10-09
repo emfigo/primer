@@ -1,8 +1,8 @@
 """create customers table
 
-Revision ID: fa933040a392
+Revision ID: f833f0e63ebe
 Revises: None
-Create Date: 2020-09-26 22:56:40.515212
+Create Date: 2020-10-08 22:14:53.738689
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlalchemy.dialects.postgresql as postgresql
 
 
 # revision identifiers, used by Alembic.
-revision = 'fa933040a392'
+revision = 'f833f0e63ebe'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -43,4 +43,3 @@ def downgrade():
     op.drop_index('ik_customers_token', 'customers')
     op.drop_constraint('uq_customers_email', 'customers')
     op.drop_table('customers')
-

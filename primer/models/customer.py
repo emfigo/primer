@@ -1,6 +1,6 @@
 from datetime import datetime
 import uuid
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, ForeignKey
 import sqlalchemy.dialects.postgresql as postgresql
 
 from primer import db

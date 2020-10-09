@@ -15,22 +15,32 @@ class PaymentMethods {
   id : uuid
   customer_id : uuid
   details : jsonb
-  payment_processor_information_id : uuid
   token : string
 }
 
-class PaymentProcessorInformations {
+class PaymentProcessorPaymentInformations {
   id : uuid
   name : string
+  payment_method_id: uuid
+  information : jsonb
+}
+
+class PaymentProcessorCustomerInformations {
+  id : uuid
+  name : string
+  customer_id: uuid
   information : jsonb
 }
 
 note "Details will look like:\n {\n card_holder_name,\n number,\n cvv,\n expriation_date\n }\n" as details
-note "Information will look like:\n {\n payment_token,\n nonce_token,\n customer_id,\n }\n" as information
+note "Information will look like:\n {\n payment_token,\n nonce_token,\n }\n" as payment_information
+note "Information will look like:\n {\n customer_id,\n }\n" as customer_information
 
 Customers "1" *-- "0..*" PaymentMethods
+Customers "1" *-- PaymentProcessorCustomerInformations
+PaymentProcessorCustomerInformations .. customer_information
 PaymentMethods .. details
-PaymentMethods --* "1" PaymentProcessorInformations
-PaymentProcessorInformations .. information
+PaymentMethods "1" *-- PaymentProcessorPaymentInformations
+PaymentProcessorPaymentInformations .. payment_information
 
 @enduml

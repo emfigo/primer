@@ -15,8 +15,14 @@ def database(request):
 
     @request.addfinalizer
     def drop_database():
-        db.session.remove()
-        db.drop_all()
+        try:
+            meta = db.metadata
+            for table in reversed(meta.sorted_tables):
+                db.session.execute(table.delete())
+
+            db.session.commit()
+        finally:
+            db.session.rollback()
 
 @pytest.fixture(scope='session')
 def testapp():

@@ -1,5 +1,8 @@
 class InvalidCustomer(Exception):
     pass
 
-class InvalidPaymentProcessorInformation(Exception):
+class InvalidPaymentMethod(Exception):
+    pass
+
+class InvalidPaymentProcessorPaymentInformation(Exception):
     pass

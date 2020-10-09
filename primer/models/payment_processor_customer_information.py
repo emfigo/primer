@@ -1,5 +1,4 @@
 from datetime import datetime
-import json
 import uuid
 from sqlalchemy import Column, String, ForeignKey
 import sqlalchemy.dialects.postgresql as postgresql
@@ -7,28 +6,27 @@ from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.exc import IntegrityError
 
 from primer import db
-from primer.exceptions import InvalidCustomer, InvalidPaymentProcessorPaymentInformation
-from primer.tokenizer import Tokenizer
+from primer.exceptions import InvalidCustomer
 
-class PaymentMethod(db.Model):
-    __tablename__ = 'payment_methods'
+class PaymentProcessorCustomerInformation(db.Model):
+    __tablename__ = 'payment_processor_customer_informations'
     id = Column(postgresql.UUID(as_uuid=True), nullable=False, primary_key=True, default=uuid.uuid4)
+    name = Column(String(100), nullable=False)
+    information = Column(MutableDict.as_mutable(postgresql.JSONB), nullable=False)
     customer_id = Column(postgresql.UUID(as_uuid=True), ForeignKey('customers.id'), nullable=False)
-    details = Column(MutableDict.as_mutable(postgresql.JSONB), nullable=False)
-    token = Column(String(250), nullable=False)
     created_at = Column(postgresql.TIMESTAMP(timezone=True), nullable=False, default=datetime.utcnow)
     updated_at = Column(postgresql.TIMESTAMP(timezone=True), nullable=False, default=datetime.utcnow)
 
     @classmethod
-    def create(kls, customer , details: dict):
-        payment_method = PaymentMethod(
+    def create(kls, name: str, customer, information: dict):
+        payment_processor_customer_information = PaymentProcessorCustomerInformation(
+            name = name,
             customer_id = customer.id,
-            details = details,
-            token = Tokenizer.token_from(json.dumps(details))
+            information = information
         )
 
         try:
-            db.session.add(payment_method)
+            db.session.add(payment_processor_customer_information)
             db.session.commit()
         except IntegrityError as err:
             error_info = err.orig.args[0]
@@ -40,16 +38,16 @@ class PaymentMethod(db.Model):
         finally:
             db.session.rollback()
 
-        return payment_method
-
-    @classmethod
-    def find_by_token(kls, token: str):
-        return PaymentMethod.query.filter_by(
-            token = token
-        ).first()
+        return payment_processor_customer_information
 
     @classmethod
     def find_by_id(kls, id: uuid.UUID):
-        return PaymentMethod.query.filter_by(
+        return PaymentProcessorCustomerInformation.query.filter_by(
             id = id
+        ).first()
+
+    @classmethod
+    def find_by_customer_id(kls, id: uuid.UUID):
+        return PaymentProcessorCustomerInformation.query.filter_by(
+            customer_id = id
         ).first()
