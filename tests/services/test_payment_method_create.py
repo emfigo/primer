@@ -1,6 +1,7 @@
 import pytest
 
 from primer.models.customer import Customer
+from primer.exceptions import InvalidPaymentMethod
 from primer.models.payment_method import PaymentMethod
 from primer.models.payment_processor_customer_information import PaymentProcessorCustomerInformation
 from primer.models.payment_processor_payment_information import PaymentProcessorPaymentInformation
@@ -23,7 +24,7 @@ class TestCustomerCreate:
     }
 
     payment_details = {
-        'card_holder_name': 'Test Coool',
+        'cardholder_name': 'Test Coool',
         'number': '1111' * 4,
         'cvv': '111',
         'expiration_date': '12/99'
@@ -75,3 +76,26 @@ class TestCustomerCreate:
         assert prev_payment_method.id == payment_method.id
         assert prev_payment_information.id == payment_information.id
 
+    @pytest.mark.parametrize('invalid_detail', [
+        { 'cardholder_name': None },
+        { 'number': None },
+        { 'cvv': None },
+        { 'expiration_date': None }
+    ])
+    def test_when_payment_details_are_invalid_does_not_create_payment_method(self, database, invalid_detail, mocker, payment_processors):
+
+        customer = Customer.create(**self.customer_details)
+        PaymentProcessorCustomerInformation.create(
+            name = self.processor_name,
+            customer = customer,
+            information = self.customer_information
+        )
+
+        before_count_payment_method = PaymentMethod.query.count()
+        before_count_payment_information = PaymentProcessorPaymentInformation.query.count()
+
+        with pytest.raises(InvalidPaymentMethod):
+            payment_method = PaymentMethodCreate.call(self.processor_name, customer.token, None, { **self.payment_details, **invalid_detail } )
+
+        assert PaymentMethod.query.count() == before_count_payment_method
+        assert PaymentProcessorPaymentInformation.query.count() == before_count_payment_information

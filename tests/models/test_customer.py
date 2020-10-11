@@ -64,7 +64,7 @@ class TestCustomer:
             website = self.website
         )
 
-        expected_json = {
+        expected_dict = {
             'first_name': customer.first_name,
             'last_name': customer.last_name,
             'email': customer.email,
@@ -73,7 +73,7 @@ class TestCustomer:
             'created_at': int(customer.created_at.timestamp())
         }
 
-        assert customer.as_dict() == expected_json
+        assert customer.as_dict() == expected_dict
 
     def test_finds_by_email_returns_the_expected_customer(self, database):
         customer = Customer.create(

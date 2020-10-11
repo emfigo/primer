@@ -3,7 +3,7 @@ import pytest
 from primer.models.customer import Customer
 from primer.models.payment_method import PaymentMethod
 from primer.models.payment_processor_payment_information import PaymentProcessorPaymentInformation
-from primer.services.payment_processor_payment_information_create import PaymentProcessorCustomerInformationCreate
+from primer.services.payment_processor_payment_information_create import PaymentProcessorPaymentInformationCreate
 
 @pytest.mark.usefixtures('database')
 class TestPaymentProcessorPaymentInformationCreate:
@@ -38,7 +38,7 @@ class TestPaymentProcessorPaymentInformationCreate:
 
         before_count = PaymentProcessorPaymentInformation.query.count()
 
-        payment_processor_payment_information = PaymentProcessorCustomerInformationCreate.call(
+        payment_processor_payment_information = PaymentProcessorPaymentInformationCreate.call(
             self.processor_name,
             payment_method,
             self.payment_processor_payment_information
@@ -53,7 +53,7 @@ class TestPaymentProcessorPaymentInformationCreate:
         customer = Customer.create(**self.customer_details)
         payment_method = PaymentMethod.create(customer, self.payment_details)
 
-        prev_payment_processor_payment_information = PaymentProcessorCustomerInformationCreate.call(
+        prev_payment_processor_payment_information = PaymentProcessorPaymentInformationCreate.call(
             self.processor_name,
             payment_method,
             self.payment_processor_payment_information
@@ -61,7 +61,7 @@ class TestPaymentProcessorPaymentInformationCreate:
 
         before_count = PaymentProcessorPaymentInformation.query.count()
 
-        payment_processor_payment_information = PaymentProcessorCustomerInformationCreate.call(
+        payment_processor_payment_information = PaymentProcessorPaymentInformationCreate.call(
             self.processor_name,
             payment_method,
             self.payment_processor_payment_information

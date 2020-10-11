@@ -53,3 +53,10 @@ class PaymentMethod(db.Model):
         return PaymentMethod.query.filter_by(
             id = id
         ).first()
+
+    def as_dict(self):
+        return {
+            'token': self.token,
+            'updated_at': int(self.created_at.timestamp()),
+            'created_at': int(self.created_at.timestamp())
+        }

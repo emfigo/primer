@@ -48,6 +48,38 @@ class TestPaymentMethod:
         assert payment_method.customer_id == customer.id
         assert payment_method.details == details
 
+    def test_converts_payment_method_to_dict(self, database):
+        customer = Customer.create(
+            first_name='Test',
+            last_name='Coool',
+            company='Really Cool LTD',
+            email='test.coool@reallycool.test',
+            phone='+1111111111',
+            fax='+12222222222',
+            website='https://www.reallycool.test'
+        )
+
+        details = {
+            'card_holder_name': 'Test Coool',
+            'number': '1111' * 4,
+            'cvv': '111',
+            'expiration_date': '12/99'
+        }
+
+        payment_method = PaymentMethod.create(
+            customer = customer,
+            details = details,
+        )
+
+        expected_dict = {
+            'token': payment_method.token,
+            'updated_at': int(payment_method.created_at.timestamp()),
+            'created_at': int(payment_method.created_at.timestamp())
+        }
+
+        assert payment_method.as_dict() == expected_dict
+
+
     def test_does_not_create_payment_method_with_invalid_customer(self, database):
         customer = Customer(
             id = uuid.uuid4(),

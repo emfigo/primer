@@ -1,6 +1,6 @@
 from primer.models.payment_processor_payment_information import PaymentProcessorPaymentInformation
 
-class PaymentProcessorCustomerInformationCreate:
+class PaymentProcessorPaymentInformationCreate:
     def __init__(self, processor_name: str, payment_method, information: dict):
         self.processor_name = processor_name
         self.payment_method = payment_method
