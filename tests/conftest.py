@@ -37,7 +37,15 @@ def testapp():
 
 @pytest.fixture(scope='session')
 def payment_processors():
-    new_paymentprocessors = mock.MagicMock()
+    mock_customer = mock.MagicMock(name='customer')
+    mock_customer.is_success = True
+    mock_customer.customer.id = 'someid'
+
+    mock_processor = mock.MagicMock(name='processor')
+    mock_processor.customer.create.return_value = mock_customer
+
+    new_paymentprocessors = mock.MagicMock(name='processors')
+    new_paymentprocessors.get.return_value = mock_processor
 
     with mock.patch('primer.payment_processors.PaymentProcessors.PAYMENT_GATEWAYS', new_paymentprocessors) as payment_processors:
         yield payment_processors

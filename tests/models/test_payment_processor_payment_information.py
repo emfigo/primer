@@ -84,3 +84,34 @@ class TestPaymentProcessorPaymentInformation:
         assert PaymentProcessorPaymentInformation.find_by_id(payment_processor_payment_information.id) is not None
         assert PaymentProcessorPaymentInformation.find_by_id(payment_processor_payment_information.id) == payment_processor_payment_information
 
+    def test_find_by_payment_mehod_id_and_processor_name_retrieves_the_expected_payment_processor_payment_information(self, database):
+        name = 'stripetest'
+        information = {
+            'payment_token': 'sometoken'
+        }
+
+        customer = Customer.create(
+            first_name = 'Test',
+            last_name = 'Test',
+            company = 'Really Cool LTD',
+            email = 'test.test@reallycool.test',
+            phone = '+1111111111',
+            fax = '+12222222222',
+            website = 'https://www.reallycool.test'
+        )
+
+        payment_method = PaymentMethod.create(
+            customer = customer,
+            details = self.details,
+        )
+
+        payment_processor_payment_information =  PaymentProcessorPaymentInformation.create(
+            name = name,
+            payment_method = payment_method,
+            information = information
+        )
+
+        assert PaymentProcessorPaymentInformation.find_by_payment_method_id_and_processor_name(uuid.uuid4(), name) is None
+        assert PaymentProcessorPaymentInformation.find_by_payment_method_id_and_processor_name(payment_method.id, name) is not None
+        assert PaymentProcessorPaymentInformation.find_by_payment_method_id_and_processor_name(payment_method.id, name) == payment_processor_payment_information
+

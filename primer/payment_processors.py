@@ -23,5 +23,7 @@ class PaymentProcessors:
         if result.is_success is False:
             raise InvalidPaymentProcessorCustomerInformation
 
-        return result.customer.id
+        return {
+            'customer_id': result.customer.id
+        }
 

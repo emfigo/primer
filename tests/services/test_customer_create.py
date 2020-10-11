@@ -31,9 +31,13 @@ class TestCustomerCreate:
 
     processor_name = 'someprocessor'
 
+    processor_information = {
+        'some_field': 'some_info'
+    }
+
 
     def test_when_customer_does_not_exists_and_all_details_correct_creates_customer(self, database, mocker, payment_processors):
-        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=True) as payment_processor_mock:
+        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=self.processor_information) as payment_processor_mock:
 
             assert Customer.find_by_email(self.email) is None
 
@@ -45,7 +49,7 @@ class TestCustomerCreate:
             assert Customer.find_by_email(self.email) == customer
 
     def test_when_customer_does_not_exists_and_with_extra_details_creates_customer(self, database, mocker, payment_processors):
-        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=True) as payment_processor_mock:
+        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=self.processor_information) as payment_processor_mock:
             assert Customer.find_by_email(self.email) is None
 
             customer = CustomerCreate.call(self.token, self.processor_name, {**self.details, 'extra-attr': 'something' })
@@ -56,7 +60,7 @@ class TestCustomerCreate:
             assert Customer.find_by_email(self.email) == customer
 
     def test_when_customer_exists_and_no_token_provided_returns_existing_customer(self, database, mocker, payment_processors):
-        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=True) as payment_processor_mock:
+        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=self.processor_information) as payment_processor_mock:
 
             existing_customer = Customer.create(**self.details)
 
@@ -67,7 +71,7 @@ class TestCustomerCreate:
             assert existing_customer.id == customer.id
 
     def test_when_customer_exists_and_token_provided_and_not_other_details_returns_existing_customer(self, database, mocker, payment_processors):
-        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=True) as payment_processor_mock:
+        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=self.processor_information) as payment_processor_mock:
 
             existing_customer = Customer.create(**self.details)
 
@@ -86,7 +90,7 @@ class TestCustomerCreate:
         { 'phone': None }
     ])
     def test_when_customer_details_are_invalid_does_not_create_customer(self, database, invalid_detail, mocker, payment_processors):
-        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=True) as payment_processor_mock:
+        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=self.processor_information) as payment_processor_mock:
 
             customer_counter = Customer.query.count()
 
@@ -103,7 +107,7 @@ class TestCustomerCreate:
         { 'website': None }
     ])
     def test_when_customer_details_are_valid_and_optional_present_creates_customer(self, database, optional_details, mocker, payment_processors):
-        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=True) as payment_processor_mock:
+        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=self.processor_information) as payment_processor_mock:
 
             customer_counter = Customer.query.count()
 

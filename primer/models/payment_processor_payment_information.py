@@ -45,3 +45,10 @@ class PaymentProcessorPaymentInformation(db.Model):
         return PaymentProcessorPaymentInformation.query.filter_by(
             id = id
         ).first()
+
+    @classmethod
+    def find_by_payment_method_id_and_processor_name(kls, payment_method_id: uuid.UUID, name: str):
+        return PaymentProcessorPaymentInformation.query.filter_by(
+            payment_method_id = payment_method_id,
+            name = name
+        ).first()

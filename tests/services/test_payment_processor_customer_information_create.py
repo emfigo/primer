@@ -7,7 +7,7 @@ from primer.models.payment_processor_customer_information import PaymentProcesso
 from primer.services.payment_processor_customer_information_create import PaymentProcessorCustomerInformationCreate
 
 @pytest.mark.usefixtures('database')
-class TestCustomerCreate:
+class TestPaymentProcessorCustomerInformationCreate:
     customer_details = {
         'first_name': 'Interesting',
         'last_name': 'Test',
