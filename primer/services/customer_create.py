@@ -1,5 +1,6 @@
 from primer.exceptions import InvalidCustomer
 from primer.models.customer import Customer
+from primer.payment_processors import PaymentProcessors
 
 class CustomerCreate:
     MANDATORY_FIELDS = [
@@ -16,7 +17,7 @@ class CustomerCreate:
     ]
 
     @classmethod
-    def call(kls, token: str, details: dict):
+    def call(kls, token: str, processor_name: str, details: dict):
         customer = Customer.find_by_token(token)
 
         if customer is None:
@@ -24,6 +25,7 @@ class CustomerCreate:
             customer = Customer.find_by_email(details['email'])
 
         if customer is None:
+            kls._register_customer_with_processor(processor_name, sliced_details)
             customer = Customer.create(**sliced_details)
 
         return customer
@@ -44,4 +46,8 @@ class CustomerCreate:
 
         return sliced_details
 
+    @staticmethod
+    def _register_customer_with_processor(processor_name: str, details: dict):
+        processor = PaymentProcessors(processor_name)
 
+        customer_id = processor.create_customer(details)

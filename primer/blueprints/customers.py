@@ -9,11 +9,13 @@ from primer.services.customer_create import CustomerCreate
 
 customers = Blueprint('customers', __name__)
 
+PAYMENT_PROCESSOR = 'braintree'
+
 @customers.route('/customers', methods=['POST'])
 def create():
     token = get_token(request.headers)
     try:
-        customer = CustomerCreate.call(token, request.json)
+        customer = CustomerCreate.call(token, PAYMENT_PROCESSOR, request.json)
     except InvalidCustomer:
         return jsonify('Customer details are invalid. Check; first_name, last_name, email, company, phone'), HTTPStatus.BAD_REQUEST
 

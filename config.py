@@ -1,3 +1,4 @@
+import braintree
 from dotenv import load_dotenv, find_dotenv
 import os
 from os.path import join, dirname, exists
@@ -12,3 +13,10 @@ else:
 
 
 DATABASE_URI = os.environ['DATABASE_URI']
+
+BRAINTREE_CONFIG = braintree.Configuration(
+    braintree.Environment.Sandbox,
+    merchant_id=os.environ.get('BRAINTREE_MERCHANT_ID'),
+    public_key=os.environ.get('BRAINTREE_PUBLIC_KEY'),
+    private_key=os.environ.get('BRAINTREE_PRIVATE_KEY')
+)

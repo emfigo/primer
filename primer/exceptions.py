@@ -6,3 +6,6 @@ class InvalidPaymentMethod(Exception):
 
 class InvalidPaymentProcessorPaymentInformation(Exception):
     pass
+
+class InvalidPaymentProcessorCustomerInformation(Exception):
+    pass

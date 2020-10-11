@@ -3,9 +3,9 @@ import pytest
 
 from primer.models.customer import Customer
 
-@pytest.mark.usefixtures('testapp', 'database')
+@pytest.mark.usefixtures('testapp', 'database', 'payment_processors')
 class TestBlueprintCustomers:
-    def test_creates_customers_when_all_details_are_valid(self, testapp, database):
+    def test_creates_customers_when_all_details_are_valid(self, testapp, database, payment_processors):
         client = testapp.test_client()
         email = 'test.test@reallycool.test'
         params = {
@@ -21,7 +21,7 @@ class TestBlueprintCustomers:
         assert response.status_code == HTTPStatus.CREATED
         assert response.json == customer.as_dict()
 
-    def test_returns_existing_customers_when_token_specified(self, testapp, database):
+    def test_returns_existing_customers_when_token_specified(self, testapp, database, payment_processors):
         client = testapp.test_client()
         customer = Customer.create(**{
             'first_name': 'Test',
@@ -46,7 +46,7 @@ class TestBlueprintCustomers:
         { 'email': None },
         { 'phone': None }
     ])
-    def test_returns_an_error_when_missing_mandatory_field(self, testapp, database, invalid_detail):
+    def test_returns_an_error_when_missing_mandatory_field(self, testapp, database, invalid_detail, payment_processors):
         client = testapp.test_client()
         email = 'test.test@reallycool.test'
         params = {
