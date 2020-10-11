@@ -96,7 +96,7 @@ class TestPaymentProcessorCustomerInformation:
         assert PaymentProcessorCustomerInformation.find_by_id(payment_processor_customer_information.id) == payment_processor_customer_information
 
 
-    def test_find_by_customer_id_retrieves_the_expected_payment_processor_customer_information(self, database):
+    def test_find_by_customer_id_and_processor_name_retrieves_the_expected_payment_processor_customer_information(self, database):
         name = 'stripetest'
         information = {
             'payment_token': 'sometoken',
@@ -119,6 +119,6 @@ class TestPaymentProcessorCustomerInformation:
             information = information
         )
 
-        assert PaymentProcessorCustomerInformation.find_by_customer_id(uuid.uuid4()) is None
-        assert PaymentProcessorCustomerInformation.find_by_customer_id(customer.id) is not None
-        assert PaymentProcessorCustomerInformation.find_by_customer_id(customer.id) == payment_processor_customer_information
+        assert PaymentProcessorCustomerInformation.find_by_customer_id_and_processor_name(uuid.uuid4(), name) is None
+        assert PaymentProcessorCustomerInformation.find_by_customer_id_and_processor_name(customer.id, name) is not None
+        assert PaymentProcessorCustomerInformation.find_by_customer_id_and_processor_name(customer.id, name) == payment_processor_customer_information

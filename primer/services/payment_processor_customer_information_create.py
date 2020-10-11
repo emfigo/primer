@@ -7,8 +7,9 @@ class PaymentProcessorCustomerInformationCreate:
         self.information = information
 
     def create_payment_processor_customer_information(self):
-        customer_information = PaymentProcessorCustomerInformation.find_by_customer_id(
-            self.customer.id
+        customer_information = PaymentProcessorCustomerInformation.find_by_customer_id_and_processor_name(
+            self.customer.id,
+            self.processor_name
         )
 
         if customer_information is None:

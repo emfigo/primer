@@ -47,7 +47,8 @@ class PaymentProcessorCustomerInformation(db.Model):
         ).first()
 
     @classmethod
-    def find_by_customer_id(kls, id: uuid.UUID):
+    def find_by_customer_id_and_processor_name(kls, id: uuid.UUID, name: str):
         return PaymentProcessorCustomerInformation.query.filter_by(
-            customer_id = id
+            customer_id = id,
+            name = name,
         ).first()
