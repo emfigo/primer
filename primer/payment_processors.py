@@ -27,3 +27,20 @@ class PaymentProcessors:
             'customer_id': result.customer.id
         }
 
+    def create_payment_method(self, details: dict):
+        payment_information = {}
+        result = self.processor.credit_card.create(details)
+
+        if result.is_success is False:
+            raise InvalidPaymentProcessorPaymentInformation
+
+        payment_information['payment_token'] = result.credit_card.token
+
+        result = self.processor.payment_method_nonce.create(payment_information['payment_token'])
+
+        if result.is_success is False:
+            raise InvalidPaymentProcessorPaymentInformation
+
+        payment_information['nonce_token'] = result.payment_method_nonce.nonce
+
+        return payment_information
