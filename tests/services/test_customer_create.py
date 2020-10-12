@@ -70,12 +70,12 @@ class TestCustomerCreate:
             assert existing_customer is not None
             assert existing_customer.id == customer.id
 
-    def test_when_customer_exists_and_token_provided_and_not_other_details_returns_existing_customer(self, database, mocker, payment_processors):
+    def test_when_customer_exists_and_token_provided_returns_existing_customer(self, database, mocker, payment_processors):
         with mock.patch.object(PaymentProcessors, 'create_customer', return_value=self.processor_information) as payment_processor_mock:
 
             existing_customer = Customer.create(**self.details)
 
-            customer = CustomerCreate.call(existing_customer.token, self.processor_name, {})
+            customer = CustomerCreate.call(existing_customer.token, self.processor_name, self.details)
             payment_processor_mock.assert_not_called()
 
             assert existing_customer is not None

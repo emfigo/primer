@@ -17,7 +17,11 @@ class CustomerCreate:
         'website'
     ]
 
-    @classmethod
+    def __init__(self, customer_token: str, processor_name: str, details: dict):
+        self.customer_token = customer_token
+        self.processor_name = processor_name
+        self.details = self._slice(details)
+
     def _slice(kls, details: dict) -> dict:
         sliced_details = {}
 
@@ -33,29 +37,35 @@ class CustomerCreate:
 
         return sliced_details
 
-    @staticmethod
-    def _register_customer_with_processor(processor_name: str, details: dict):
+    def _register_customer_with_processor(self, processor_name: str, details: dict):
         processor = PaymentProcessors(processor_name)
 
         return processor.create_customer(details)
 
-    @classmethod
-    def call(kls, token: str, processor_name: str, details: dict):
-        customer = Customer.find_by_token(token)
+    def create_customer(self):
+        customer = Customer.find_by_token(self.customer_token)
 
         if customer is None:
-            sliced_details = kls._slice(details)
-            customer = Customer.find_by_email(details['email'])
+            customer = Customer.find_by_email(self.details['email'])
 
         if customer is None:
-            processor_information = kls._register_customer_with_processor(processor_name, sliced_details)
-            customer = Customer.create(**sliced_details)
+            processor_information = self._register_customer_with_processor(
+                self.processor_name, self.details
+            )
+
+            customer = Customer.create(**self.details)
 
             PaymentProcessorCustomerInformationCreate.call(
-                processor_name,
+                self.processor_name,
                 customer,
                 processor_information
             )
 
         return customer
+
+    @classmethod
+    def call(kls, customer_token: str, processor_name: str, details: dict):
+        service = kls(customer_token, processor_name, details)
+
+        return service.create_customer()
 
