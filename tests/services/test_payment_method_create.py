@@ -51,7 +51,7 @@ class TestCustomerCreate:
 
         payment_information = PaymentProcessorPaymentInformation.find_by_payment_method_id_and_processor_name(payment_method.id, self.processor_name)
 
-        assert payment_information.information == { 'payment_token': 'sometoken', 'nonce_token': 'sometoken' }
+        assert payment_information.information == { 'payment_token': 'sometoken' }
 
     def test_returns_existing_payment_method_when_token_provided(self, database, payment_processors):
         customer = Customer.create(**self.customer_details)

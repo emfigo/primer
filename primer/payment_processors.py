@@ -1,7 +1,7 @@
 import braintree
 
 from config import BRAINTREE_CONFIG
-from primer.exceptions import InvalidPaymentProcessorPaymentInformation, InvalidPaymentProcessorCustomerInformation
+from primer.exceptions import InvalidPaymentProcessorPaymentInformation, InvalidPaymentMethod, InvalidPaymentProcessorCustomerInformation
 
 class PaymentProcessors:
     PAYMENT_GATEWAYS = {
@@ -28,19 +28,32 @@ class PaymentProcessors:
         }
 
     def create_payment_method(self, details: dict):
-        payment_information = {}
         result = self.processor.credit_card.create(details)
 
         if result.is_success is False:
             raise InvalidPaymentProcessorPaymentInformation
 
-        payment_information['payment_token'] = result.credit_card.token
+        return {
+            'payment_token': result.credit_card.token
+        }
 
-        result = self.processor.payment_method_nonce.create(payment_information['payment_token'])
+    def create_payment_method_nonce(self, details):
+        result = self.processor.payment_method_nonce.create(details['payment_token'])
 
         if result.is_success is False:
             raise InvalidPaymentProcessorPaymentInformation
 
-        payment_information['nonce_token'] = result.payment_method_nonce.nonce
+        return {
+            'payment_method_nonce': result.payment_method_nonce.nonce
+        }
 
-        return payment_information
+
+    def create_sale(self, details: dict):
+        result = self.processor.transaction.sale(details)
+
+        if result.is_success is False:
+            raise InvalidPaymentMethod
+
+        return {
+            'message': 'transaction was made successfully'
+        }
