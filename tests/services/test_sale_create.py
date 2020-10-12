@@ -1,7 +1,7 @@
 import pytest
 
 from primer.services.customer_create import CustomerCreate
-from primer.exceptions import InvalidPaymentMethod
+from primer.exceptions import InvalidCustomer, InvalidPaymentMethod
 from primer.services.payment_method_create import PaymentMethodCreate
 from primer.services.sale_create import SaleCreate
 
@@ -30,7 +30,7 @@ class TestSaleCreate:
 
     processor_name = 'someprocessor'
 
-    def test_creates_payment_method_when_all_details_are_valid_and_valid_tokens_provided(self, database, payment_processors):
+    def test_creates_sale_when_all_details_are_valid_and_valid_tokens_provided(self, database, payment_processors):
         customer = CustomerCreate.call(
             None,
             self.processor_name,
@@ -52,11 +52,48 @@ class TestSaleCreate:
 
         assert sale == { 'message': f"transaction was made successfully for amount {self.sale_details['amount']}" }
 
+    def test_when_payment_details_are_valid_and_no_payment_token_provided_does_not_create_sale(self, database, payment_processors):
+
+        customer = CustomerCreate.call(
+            None,
+            self.processor_name,
+            self.customer_details
+        )
+
+        with pytest.raises(InvalidPaymentMethod):
+            SaleCreate.call(
+                self.processor_name,
+                customer.token,
+                None,
+                self.sale_details
+            )
+
+    def test_when_payment_details_are_valid_and_no_customer_token_provided_does_not_create_sale(self, database, payment_processors):
+
+        customer = CustomerCreate.call(
+            None,
+            self.processor_name,
+            self.customer_details
+        )
+        payment_method = PaymentMethodCreate.call(
+            self.processor_name,
+            customer.token,
+            None,
+            self.payment_details
+        )
+
+        with pytest.raises(InvalidCustomer):
+            SaleCreate.call(
+                self.processor_name,
+                None,
+                payment_method.token,
+                self.sale_details
+            )
 
     @pytest.mark.parametrize('invalid_detail', [
         { 'amount': None }
     ])
-    def test_when_payment_details_are_invalid_does_not_create_payment_method(self, database, invalid_detail, payment_processors):
+    def test_when_payment_details_are_invalid_does_not_create_sale(self, database, invalid_detail, payment_processors):
 
         customer = CustomerCreate.call(
             None,

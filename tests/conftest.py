@@ -7,6 +7,7 @@ from unittest import mock
 from primer import app, db
 from primer.blueprints.customers import customers
 from primer.blueprints.payment_methods import payment_methods
+from primer.blueprints.sales import sales
 from primer.payment_processors import PaymentProcessors
 
 
@@ -35,6 +36,7 @@ def testapp():
 
     app.register_blueprint(customers)
     app.register_blueprint(payment_methods)
+    app.register_blueprint(sales)
     return app
 
 @pytest.fixture(scope='session')

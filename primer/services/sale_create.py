@@ -26,7 +26,7 @@ class SaleCreate:
         self.payment_method = PaymentMethod.find_by_token(token)
 
         if self.payment_method is None:
-            raise InvalidCustomer
+            raise InvalidPaymentMethod
 
     def _slice(self, details: dict) -> dict:
         sliced_details = {}
