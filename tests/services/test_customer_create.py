@@ -1,12 +1,8 @@
-from pytest_mock import mocker
 import pytest
-import uuid
-from unittest import mock
 
 from primer.exceptions import InvalidCustomer
 from primer.services.customer_create import CustomerCreate
 from primer.models.customer import Customer
-from primer.payment_processors import PaymentProcessors
 
 @pytest.mark.usefixtures('database')
 class TestCustomerCreate:
@@ -36,51 +32,38 @@ class TestCustomerCreate:
     }
 
 
-    def test_when_customer_does_not_exists_and_all_details_correct_creates_customer(self, database, mocker, payment_processors):
-        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=self.processor_information) as payment_processor_mock:
+    def test_when_customer_does_not_exists_and_all_details_correct_creates_customer(self, database, payment_processors):
+        assert Customer.find_by_email(self.email) is None
 
-            assert Customer.find_by_email(self.email) is None
+        customer = CustomerCreate.call(self.token, self.processor_name, self.details)
 
-            customer = CustomerCreate.call(self.token, self.processor_name, self.details)
+        assert customer is not None
+        assert Customer.find_by_email(self.email) == customer
 
-            payment_processor_mock.assert_called_once_with(self.details)
+    def test_when_customer_does_not_exists_and_with_extra_details_creates_customer(self, database, payment_processors):
+        assert Customer.find_by_email(self.email) is None
 
-            assert customer is not None
-            assert Customer.find_by_email(self.email) == customer
+        customer = CustomerCreate.call(self.token, self.processor_name, {**self.details, 'extra-attr': 'something' })
 
-    def test_when_customer_does_not_exists_and_with_extra_details_creates_customer(self, database, mocker, payment_processors):
-        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=self.processor_information) as payment_processor_mock:
-            assert Customer.find_by_email(self.email) is None
+        assert customer is not None
+        assert Customer.find_by_email(self.email) == customer
 
-            customer = CustomerCreate.call(self.token, self.processor_name, {**self.details, 'extra-attr': 'something' })
+    def test_when_customer_exists_and_no_token_provided_returns_existing_customer(self, database, payment_processors):
+        existing_customer = Customer.create(**self.details)
 
-            payment_processor_mock.assert_called_once_with(self.details)
+        customer = CustomerCreate.call(self.token, self.processor_name, self.details)
 
-            assert customer is not None
-            assert Customer.find_by_email(self.email) == customer
+        assert existing_customer is not None
+        assert existing_customer.id == customer.id
 
-    def test_when_customer_exists_and_no_token_provided_returns_existing_customer(self, database, mocker, payment_processors):
-        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=self.processor_information) as payment_processor_mock:
+    def test_when_customer_exists_and_token_provided_returns_existing_customer(self, database, payment_processors):
+        existing_customer = Customer.create(**self.details)
 
-            existing_customer = Customer.create(**self.details)
+        customer = CustomerCreate.call(existing_customer.token, self.processor_name, self.details)
 
-            customer = CustomerCreate.call(self.token, self.processor_name, self.details)
-            payment_processor_mock.get.assert_not_called()
-
-            assert existing_customer is not None
-            assert existing_customer.id == customer.id
-
-    def test_when_customer_exists_and_token_provided_returns_existing_customer(self, database, mocker, payment_processors):
-        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=self.processor_information) as payment_processor_mock:
-
-            existing_customer = Customer.create(**self.details)
-
-            customer = CustomerCreate.call(existing_customer.token, self.processor_name, self.details)
-            payment_processor_mock.assert_not_called()
-
-            assert existing_customer is not None
-            assert existing_customer.id == customer.id
-            assert existing_customer.token == customer.token
+        assert existing_customer is not None
+        assert existing_customer.id == customer.id
+        assert existing_customer.token == customer.token
 
     @pytest.mark.parametrize('invalid_detail', [
         { 'first_name': None },
@@ -89,32 +72,24 @@ class TestCustomerCreate:
         { 'email': None },
         { 'phone': None }
     ])
-    def test_when_customer_details_are_invalid_does_not_create_customer(self, database, invalid_detail, mocker, payment_processors):
-        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=self.processor_information) as payment_processor_mock:
+    def test_when_customer_details_are_invalid_does_not_create_customer(self, database, invalid_detail, payment_processors):
+        customer_counter = Customer.query.count()
 
-            customer_counter = Customer.query.count()
+        with pytest.raises(InvalidCustomer):
+            customer = CustomerCreate.call(self.token, self.processor_name, {**self.details, **invalid_detail} )
 
-            with pytest.raises(InvalidCustomer):
-                customer = CustomerCreate.call(self.token, self.processor_name, {**self.details, **invalid_detail} )
-
-            payment_processor_mock.assert_not_called()
-
-            assert Customer.query.count() == customer_counter
+        assert Customer.query.count() == customer_counter
 
 
     @pytest.mark.parametrize('optional_details', [
         { 'fax': None },
         { 'website': None }
     ])
-    def test_when_customer_details_are_valid_and_optional_present_creates_customer(self, database, optional_details, mocker, payment_processors):
-        with mock.patch.object(PaymentProcessors, 'create_customer', return_value=self.processor_information) as payment_processor_mock:
+    def test_when_customer_details_are_valid_and_optional_present_creates_customer(self, database, optional_details, payment_processors):
+        customer_counter = Customer.query.count()
 
-            customer_counter = Customer.query.count()
+        customer = CustomerCreate.call(self.token, self.processor_name, {**self.details, **optional_details} )
 
-            customer = CustomerCreate.call(self.token, self.processor_name, {**self.details, **optional_details} )
-
-            payment_processor_mock.assert_called_once_with({**self.details, **optional_details})
-
-            assert Customer.query.count() == customer_counter + 1
-            assert customer is not None
-            assert Customer.find_by_email(self.email) == customer
+        assert Customer.query.count() == customer_counter + 1
+        assert customer is not None
+        assert Customer.find_by_email(self.email) == customer

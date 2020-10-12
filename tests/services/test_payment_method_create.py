@@ -1,10 +1,9 @@
 import pytest
 
-from primer.models.customer import Customer
 from primer.exceptions import InvalidPaymentMethod
 from primer.models.payment_method import PaymentMethod
-from primer.models.payment_processor_customer_information import PaymentProcessorCustomerInformation
 from primer.models.payment_processor_payment_information import PaymentProcessorPaymentInformation
+from primer.services.customer_create import CustomerCreate
 from primer.services.payment_method_create import PaymentMethodCreate
 
 @pytest.mark.usefixtures('database', 'payment_processors')
@@ -19,10 +18,6 @@ class TestCustomerCreate:
         'website': 'https://www.reallyinteresting.test'
     }
 
-    customer_information = {
-        'customer_id': 'someid'
-    }
-
     payment_details = {
         'cardholder_name': 'Test Coool',
         'number': '1111' * 4,
@@ -33,11 +28,10 @@ class TestCustomerCreate:
     processor_name = 'someprocessor'
 
     def test_creates_payment_method_when_all_details_valid_and_does_not_exist(self, database, payment_processors):
-        customer = Customer.create(**self.customer_details)
-        PaymentProcessorCustomerInformation.create(
-            name = self.processor_name,
-            customer = customer,
-            information = self.customer_information
+        customer = CustomerCreate.call(
+            None,
+            self.processor_name,
+            self.customer_details
         )
 
         before_count = PaymentMethod.query.count()
@@ -54,11 +48,10 @@ class TestCustomerCreate:
         assert payment_information.information == { 'payment_token': 'sometoken' }
 
     def test_returns_existing_payment_method_when_token_provided(self, database, payment_processors):
-        customer = Customer.create(**self.customer_details)
-        PaymentProcessorCustomerInformation.create(
-            name = self.processor_name,
-            customer = customer,
-            information = self.customer_information
+        customer = CustomerCreate.call(
+            None,
+            self.processor_name,
+            self.customer_details
         )
 
         prev_payment_method = PaymentMethodCreate.call(self.processor_name, customer.token, None, self.payment_details)
@@ -82,13 +75,12 @@ class TestCustomerCreate:
         { 'cvv': None },
         { 'expiration_date': None }
     ])
-    def test_when_payment_details_are_invalid_does_not_create_payment_method(self, database, invalid_detail, mocker, payment_processors):
+    def test_when_payment_details_are_invalid_does_not_create_payment_method(self, database, invalid_detail, payment_processors):
 
-        customer = Customer.create(**self.customer_details)
-        PaymentProcessorCustomerInformation.create(
-            name = self.processor_name,
-            customer = customer,
-            information = self.customer_information
+        customer = CustomerCreate.call(
+            None,
+            self.processor_name,
+            self.customer_details
         )
 
         before_count_payment_method = PaymentMethod.query.count()

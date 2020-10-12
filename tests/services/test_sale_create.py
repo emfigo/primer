@@ -1,7 +1,7 @@
 import pytest
 
 from primer.services.customer_create import CustomerCreate
-from primer.exceptions import InvalidCustomer, InvalidPaymentMethod
+from primer.exceptions import InvalidCustomer, InvalidPaymentMethod, InvalidSale
 from primer.services.payment_method_create import PaymentMethodCreate
 from primer.services.sale_create import SaleCreate
 
@@ -107,7 +107,7 @@ class TestSaleCreate:
             self.payment_details
         )
 
-        with pytest.raises(InvalidPaymentMethod):
+        with pytest.raises(InvalidSale):
             SaleCreate.call(
                 self.processor_name,
                 customer.token,

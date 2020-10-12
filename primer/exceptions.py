@@ -4,6 +4,9 @@ class InvalidCustomer(Exception):
 class InvalidPaymentMethod(Exception):
     pass
 
+class InvalidSale(Exception):
+    pass
+
 class InvalidPaymentProcessorPaymentInformation(Exception):
     pass
 

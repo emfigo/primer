@@ -2,6 +2,7 @@ from primer.exceptions import InvalidCustomer, InvalidPaymentMethod
 from primer.models.customer import Customer
 from primer.models.payment_method import PaymentMethod
 from primer.models.payment_processor_payment_information import PaymentProcessorPaymentInformation
+from primer.services import utils
 from primer.payment_processors import PaymentProcessors
 
 class SaleCreate:
@@ -9,12 +10,14 @@ class SaleCreate:
         'amount'
     ]
 
+    OPTIONAL_FIELDS = []
+
     def __init__(self, processor_name: str, customer_token: str, payment_token: str, details: dict):
         self._find_customer(customer_token)
         self._find_payment_method(payment_token)
         self.processor_name = processor_name
         self.processor = PaymentProcessors(processor_name)
-        self.details = self._slice(details)
+        self.details = utils.slice(SaleCreate, details)
 
     def _find_customer(self, token: str):
         self.customer = Customer.find_by_token(token)
@@ -27,18 +30,6 @@ class SaleCreate:
 
         if self.payment_method is None:
             raise InvalidPaymentMethod
-
-    def _slice(self, details: dict) -> dict:
-        sliced_details = {}
-
-        for k in SaleCreate.MANDATORY_FIELDS:
-            if details.get(k) is not None:
-                sliced_details[k] = details[k]
-            else:
-                raise InvalidPaymentMethod
-
-
-        return sliced_details
 
     def create_sale(self):
         payment_processor_payment_information = PaymentProcessorPaymentInformation.find_by_payment_method_id_and_processor_name(self.payment_method.id, self.processor_name)

@@ -80,7 +80,7 @@ class TestBlueprintPaymentMethods:
         response = client.post('/sales', json=self.details, headers=headers)
 
         assert response.status_code == HTTPStatus.BAD_REQUEST
-        assert response.json == 'The customer or/and the payment token or amount are invalid. Please try new tokens or amount.'
+        assert response.json == 'The customer or/and the payment token are invalid. Please try new tokens.'
 
     @pytest.mark.parametrize('invalid_detail', [
         { 'amount': None }
@@ -108,7 +108,7 @@ class TestBlueprintPaymentMethods:
         response = client.post('/sales', json={**self.details, **invalid_detail}, headers=headers)
 
         assert response.status_code == HTTPStatus.BAD_REQUEST
-        assert response.json == 'The customer or/and the payment token or amount are invalid. Please try new tokens or amount.'
+        assert response.json == 'The customer or/and the payment token are invalid. Please try new tokens.'
     @pytest.mark.parametrize('invalid_detail', [
         { 'amount': None }
     ])
@@ -135,6 +135,6 @@ class TestBlueprintPaymentMethods:
         response = client.post('/sales', json={**self.details, **invalid_detail}, headers=headers)
 
         assert response.status_code == HTTPStatus.BAD_REQUEST
-        assert response.json == 'The customer or/and the payment token or amount are invalid. Please try new tokens or amount.'
+        assert response.json == 'The camount is not provided. Please try new amount.'
 
 

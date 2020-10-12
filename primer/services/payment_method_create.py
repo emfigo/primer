@@ -6,6 +6,7 @@ from primer.models.customer import Customer
 from primer.models.payment_processor_customer_information import PaymentProcessorCustomerInformation
 from primer.models.payment_method import PaymentMethod
 from primer.models.payment_processor_payment_information import PaymentProcessorPaymentInformation
+from primer.services import utils
 from primer.services.payment_processor_payment_information_create import PaymentProcessorPaymentInformationCreate
 
 class PaymentMethodCreate:
@@ -16,12 +17,14 @@ class PaymentMethodCreate:
         'expiration_date'
     ]
 
+    OPTIONAL_FIELDS = []
+
     def __init__(self, processor_name: str, customer_token: str, payment_token: str, details: dict):
         self._find_customer(customer_token)
         self.payment_token = payment_token
         self.processor_name = processor_name
         self.processor = PaymentProcessors(processor_name)
-        self.details = self._slice(details)
+        self.details = utils.slice(PaymentMethodCreate, details)
 
     def _find_customer(self, token: str):
         self.customer = Customer.find_by_token(token)
@@ -62,18 +65,6 @@ class PaymentMethodCreate:
             payment_method = PaymentMethod.create(self.customer, self.details)
 
         return payment_method
-
-    def _slice(self, details: dict) -> dict:
-        sliced_details = {}
-
-        for k in PaymentMethodCreate.MANDATORY_FIELDS:
-            if details.get(k) is not None:
-                sliced_details[k] = details[k]
-            else:
-                raise InvalidPaymentMethod
-
-
-        return sliced_details
 
     @classmethod
     def call(kls, processor_name: str, customer_token: str, payment_token: str, details: dict):

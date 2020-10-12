@@ -1,5 +1,5 @@
-from primer.exceptions import InvalidCustomer
 from primer.models.customer import Customer
+from primer.services import utils
 from primer.services.payment_processor_customer_information_create import PaymentProcessorCustomerInformationCreate
 from primer.payment_processors import PaymentProcessors
 
@@ -20,22 +20,7 @@ class CustomerCreate:
     def __init__(self, customer_token: str, processor_name: str, details: dict):
         self.customer_token = customer_token
         self.processor_name = processor_name
-        self.details = self._slice(details)
-
-    def _slice(kls, details: dict) -> dict:
-        sliced_details = {}
-
-        for k in kls.MANDATORY_FIELDS:
-            if details.get(k) is not None:
-                sliced_details[k] = details[k]
-            else:
-                raise InvalidCustomer
-
-        for k in kls.OPTIONAL_FIELDS:
-            sliced_details[k] = details.get(k)
-
-
-        return sliced_details
+        self.details = utils.slice(CustomerCreate, details)
 
     def _register_customer_with_processor(self, processor_name: str, details: dict):
         processor = PaymentProcessors(processor_name)
