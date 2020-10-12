@@ -43,6 +43,9 @@ def payment_processors():
     mock_customer.is_success = True
     mock_customer.customer.id = 'someid'
 
+    mock_sale = mock.MagicMock(name='sale')
+    mock_sale.is_success = True
+
     mock_payment_method = mock.MagicMock(name='payment_method')
     mock_payment_method.is_success = True
     mock_payment_method.credit_card.token = 'sometoken'
@@ -55,6 +58,7 @@ def payment_processors():
     mock_processor.customer.create.return_value = mock_customer
     mock_processor.credit_card.create.return_value = mock_payment_method
     mock_processor.payment_method_nonce.create.return_value = mock_payment_method_nonce
+    mock_processor.transaction.sale.return_value = mock_sale
 
     new_paymentprocessors = mock.MagicMock(name='processors')
     new_paymentprocessors.get.return_value = mock_processor

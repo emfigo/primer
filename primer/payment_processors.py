@@ -54,6 +54,4 @@ class PaymentProcessors:
         if result.is_success is False:
             raise InvalidPaymentMethod
 
-        return {
-            'message': 'transaction was made successfully'
-        }
+        return result.is_success

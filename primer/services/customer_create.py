@@ -18,26 +18,6 @@ class CustomerCreate:
     ]
 
     @classmethod
-    def call(kls, token: str, processor_name: str, details: dict):
-        customer = Customer.find_by_token(token)
-
-        if customer is None:
-            sliced_details = kls._slice(details)
-            customer = Customer.find_by_email(details['email'])
-
-        if customer is None:
-            processor_information = kls._register_customer_with_processor(processor_name, sliced_details)
-            customer = Customer.create(**sliced_details)
-
-            PaymentProcessorCustomerInformationCreate.call(
-                processor_name,
-                customer,
-                processor_information
-            )
-
-        return customer
-
-    @classmethod
     def _slice(kls, details: dict) -> dict:
         sliced_details = {}
 
@@ -58,3 +38,24 @@ class CustomerCreate:
         processor = PaymentProcessors(processor_name)
 
         return processor.create_customer(details)
+
+    @classmethod
+    def call(kls, token: str, processor_name: str, details: dict):
+        customer = Customer.find_by_token(token)
+
+        if customer is None:
+            sliced_details = kls._slice(details)
+            customer = Customer.find_by_email(details['email'])
+
+        if customer is None:
+            processor_information = kls._register_customer_with_processor(processor_name, sliced_details)
+            customer = Customer.create(**sliced_details)
+
+            PaymentProcessorCustomerInformationCreate.call(
+                processor_name,
+                customer,
+                processor_information
+            )
+
+        return customer
+

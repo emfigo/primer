@@ -12,13 +12,19 @@ application.
 - Since the API required is too small, the application will be done with Flask
 - Because of `Note: for context, in order for Primer to facilitate recurring transactions across a range of processors, and to centrally capture and store payment information - tokenisation and storage of raw payment information sits with us.`, I've decided to store and manage all customer and payment information in the backend app.
 - Even though at the moment the only processor used is Braintree, the current implementation will allow to incorporate other processors in the future, being able to manage multiple of them at the same time.
+- We are not the source of truth for the transactions executed. If we need to find out information from it we can pull it directly from the payment processor
 - To reduce scope and because there are no explicit requirements, a few things were simplified:
   - PPI data like customer information are store in the DB with the rest of the data.
   - Even though I'm using tokens, I have not introduced any mechanism for expiration of the token (more security)
+  - There is no end to end encryption on the communication.
   - Didn't add client documentation to the API (like swagger)
   - You can create a customer through the API, but the functionality is pretty basic. You won't be able to do more things like patching or reading information from the customer.
   - Error messages in the API are really basic. No presenters
+  - The only payment method accepted is a credit card. For valid credit card numbers please read the [braintree documentation](https://developers.braintreepayments.com/reference/general/testing/python)
+  - Credt cards are not validated. Which means that if is a valid credit card, even though can be declined, will be accepted.
   - There is no authentication, neither authorization on the API, just relies on the tokens.
+  - There is no logging
+  - There is no monitoring
 
 ### Requirements
 
@@ -103,6 +109,11 @@ If you have reached this point without errors, congratulations you can start the
 
 
 #### Running the app
+
+Modify the values accordingly
+```bash
+cp .sample.env .dev.env
+```
 
 For running the app:
 ```bash
