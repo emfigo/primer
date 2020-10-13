@@ -170,6 +170,8 @@ Customer tab with token
 
 ![](./documents/customer_token.png)
 
+**Save the token !**
+
 2. **Create a payment method**: This will give you back a payment method token, which you will use for generating a sale.
 Make sure you use a [valid card](https://developers.braintreepayments.com/reference/general/testing/python#valid-card-numbers), other wise you are going to receive an error.
 
@@ -180,6 +182,9 @@ Create payment method tab
 Payment method tab with token
 
 ![](./documents/payment_token.png)
+
+**Save the token !**
+
 3. **Generate a sale**. This is just a sample, but together the customer token with the payment method token you will be able to create a sale for whatever amount you would like.
 
 Create sale tab
