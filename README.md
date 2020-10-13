@@ -24,7 +24,7 @@ application.
   - Credt cards are not validated. Which means that if is a valid credit card, even though can be declined, will be accepted.
   - There is no authentication, neither authorization on the API, just relies on the tokens.
   - There is no logging
-  - There is no monitoring
+  - There is sample UI in the application to test the backend visually. Do not consider this as production code, since it was created purely for demo purposes.
 
 ### Requirements
 
@@ -38,6 +38,7 @@ export CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"
 export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"
 ```
 - Docker will be running all dependencies from the project including the DB. For Mac user please read [documentation](https://docs.docker.com/docker-for-mac/)
+- Install [npm](https://www.npmjs.com/get-npm) for the demo UI
 
 #### Installing python
 
@@ -121,5 +122,79 @@ python app.py api
 ```
 Anything else will show you an error message.
 
+#### Running the UI
+
+For the purpose of demo the backend there was created a sample UI. You can start it by doing
+the following:
+
+**Make sure that you have the API up and running before this step**
+
+cd into the directory
+```bash
+cd sample-ui
+```
+
+Install all dependencies:
+```bash
+npm install
+```
+
+Run the app:
+```bash
+npm start
+```
+
+Go to the [UI](http://localhost:3000)
+
+## Demo
+
+The UI application was created to visualise how does the tokens get created and how they are needed to create a payment
+method and a sale with any amount. Encryption was not added to make the visualization easier, but in a real app this
+would need to be a requirement, since we are dealing with financial information and PII.
+
+The main focus was the backend, so again the UI was created to be dropped and used only for the demo and in a real
+scenario it wouldn't even be part of this repo.
+
+The UI is a Single Page App, with 3 tabs one per action you can do in the API. Follow this steps, clicking on the tabs
+to complete the demo:
+
+1. **Create a customer**: This will give you back a customer token, which you will use for assigning
+a payment method to the customer.
+
+Create customer tab
+
+![](./documents/create_customer.png)
+
+Customer tab with token
+
+![](./documents/customer_token.png)
+
+2. **Create a payment method**: This will give you back a payment method token, which you will use for generating a sale.
+Make sure you use a [valid card](https://developers.braintreepayments.com/reference/general/testing/python#valid-card-numbers), other wise you are going to receive an error.
+
+Create payment method tab
+
+![](./documents/create_payment_method.png)
+
+Payment method tab with token
+
+![](./documents/payment_token.png)
+3. **Generate a sale**. This is just a sample, but together the customer token with the payment method token you will be able to create a sale for whatever amount you would like.
+
+Create sale tab
+
+![](./documents/create_sale.png)
+
+Sale with success message
+
+![](./documents/sale_success.png)
+
+Also whatever you are doing will be reflected in the payment processor. In this case will be braintree.
+
 ## Missings
 
+Aside from the things that I removed to reduce scope, also I would add the following things:
+- Dockerise the app
+- Deployment process ( It could be something like kubernetes )
+- Alerting
+- There is no monitoring
