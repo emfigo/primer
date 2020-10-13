@@ -200,7 +200,9 @@ Also whatever you are doing will be reflected in the payment processor. In this 
 ## Missings
 
 Aside from the things that I removed to reduce scope, also I would add the following things:
+- Integrate the token system with an authentication and authorization system. So everything about
+it becomes transparent to the user.
 - Dockerise the app
 - Deployment process ( It could be something like kubernetes )
 - Alerting
-- There is no monitoring
+- Monitoring
