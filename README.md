@@ -125,7 +125,7 @@ Anything else will show you an error message.
 
 #### Running the UI
 
-For the purpose of demo the backend there was created a sample UI. You can start it by doing
+For demoing the backend here is a sample UI included in the project. You can start it by doing
 the following:
 
 **Make sure that you have the API up and running before this step**
