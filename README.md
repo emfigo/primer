@@ -21,7 +21,7 @@ application.
   - You can create a customer through the API, but the functionality is pretty basic. You won't be able to do more things like patching or reading information from the customer.
   - Error messages in the API are really basic. No presenters
   - The only payment method accepted is a credit card. For valid credit card numbers please read the [braintree documentation](https://developers.braintreepayments.com/reference/general/testing/python)
-  - Credt cards are not validated. Which means that if is a valid credit card, even though can be declined, will be accepted.
+  - Credit cards are not validated. Which means that if is a valid credit card, even though can be declined, will be accepted.
   - There is no authentication, neither authorization on the API, just relies on the tokens.
   - There is no logging
   - There is sample UI in the application to test the backend visually. Do not consider this as production code, since it was created purely for demo purposes.
@@ -30,6 +30,7 @@ application.
 
 Make sure that you have the following installed on your machine:
 
+- Braintree account for env variables (https://sandbox.braintreegateway.com/login)
 - Python 3.8.5 (version in `.python-version` file)
 - I strongly recommend that you setup a virtual environment for this project
 - Postgres is used as DB, in case you are using MacOS > 10, make sure that you have the correct openssl flags exported in your terminal, otherwise you will run into trouble with the binaries for `psycopg2`. For example:
